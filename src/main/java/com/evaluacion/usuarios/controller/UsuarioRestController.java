@@ -48,6 +48,8 @@ public class UsuarioRestController {
     @PostMapping( value = "/usuarios", consumes= {MediaType.APPLICATION_JSON_VALUE}, produces= {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Usuario> agregarUsuario(@RequestBody Usuario usuario) {
         Usuario user= new Usuario();
+        int upperCase = 0;
+        int numberBase = 0;
         Date createDate = new Date();
         String id = UUID.randomUUID().toString();
         String KEY ="EvaluacionRC";
@@ -58,21 +60,35 @@ public class UsuarioRestController {
                             .claim("Telefono", usuario.getNumber())
                             .compact();
 
-        user.setId(id);
-        user.setName(usuario.getName());
-        user.setEmail(usuario.getEmail());
-        user.setPassword(usuario.getPassword());
-        user.setNumber(usuario.getNumber());
-        user.setCityCode(usuario.getCityCode());
-        user.setCountryCode(usuario.getCountryCode());
-        user.setCreated(createDate);
-        user.setLast_login(createDate);
-        user.setToken(tokenJWT);
-        user.setIsactive(true);
+        for (int k = 0; k < usuario.getPassword().length(); k++) {
+            if (Character.isUpperCase(usuario.getPassword().charAt(k))) upperCase++;
+            if (Character.isDigit(usuario.getPassword().charAt(k))) numberBase++;
+        }
 
-        usuarioService.save(user);
+        if(usuario.getEmail().contains("@dominio.cl")) {
+            if(upperCase <= 2 && numberBase <= 2){
+                user.setId(id);
+                user.setName(usuario.getName());
+                user.setEmail(usuario.getEmail());
+                user.setPassword(usuario.getPassword());
+                user.setNumber(usuario.getNumber());
+                user.setCityCode(usuario.getCityCode());
+                user.setCountryCode(usuario.getCountryCode());
+                user.setCreated(createDate);
+                user.setLast_login(createDate);
+                user.setToken(tokenJWT);
+                user.setIsactive(true);
 
-        return new ResponseEntity<>(user, HttpStatus.OK);
+                usuarioService.save(user);
+
+                return new ResponseEntity<>(user, HttpStatus.OK);
+            }else{
+                throw new RuntimeException("el dominio del Email no es el correcto");
+            }
+        }
+        else {
+            throw new RuntimeException("el dominio del Email no es el correcto");
+        }
     }
 
     @DeleteMapping(value ="usuarios/{usuariosID}", consumes= {MediaType.APPLICATION_JSON_VALUE}, produces= {MediaType.APPLICATION_JSON_VALUE})
@@ -82,7 +98,7 @@ public class UsuarioRestController {
             throw new RuntimeException("Usuario no encontrado por el  Id -"+usuariosID);
         }
         usuarioService.deleteById(usuariosID);
-        
+
         return new ResponseEntity(HttpStatus.OK);
     }
 }
