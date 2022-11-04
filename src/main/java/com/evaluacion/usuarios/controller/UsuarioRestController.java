@@ -3,6 +3,7 @@ package com.evaluacion.usuarios.controller;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import javax.validation.Valid;
 
 import com.evaluacion.usuarios.entity.Usuario;
 import com.evaluacion.usuarios.service.UsuarioService;
@@ -46,7 +47,7 @@ public class UsuarioRestController {
     }
 
     @PostMapping( value = "/usuarios", consumes= {MediaType.APPLICATION_JSON_VALUE}, produces= {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Usuario> agregarUsuario(@RequestBody Usuario usuario) {
+    public ResponseEntity<Usuario> agregarUsuario(@Valid @RequestBody Usuario usuario) {
         Usuario user= new Usuario();
         int upperCase = 0;
         int numberBase = 0;
@@ -80,15 +81,9 @@ public class UsuarioRestController {
                 user.setIsactive(true);
 
                 usuarioService.save(user);
-
-                return new ResponseEntity<>(user, HttpStatus.OK);
-            }else{
-                throw new RuntimeException("el dominio del Email no es el correcto");
             }
         }
-        else {
-            throw new RuntimeException("el dominio del Email no es el correcto");
-        }
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @DeleteMapping(value ="usuarios/{usuariosID}", consumes= {MediaType.APPLICATION_JSON_VALUE}, produces= {MediaType.APPLICATION_JSON_VALUE})
