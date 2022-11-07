@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @ControllerAdvice
-public class ErrorHandler {
-
+public class ErrorHandler
+{
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorInfo> methodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException e) {
 
@@ -28,6 +28,5 @@ public class ErrorHandler {
         // return error info object with standard json
         ErrorInfo errorInfo = new ErrorInfo(HttpStatus.BAD_REQUEST.value(), errorMessage.toString(), request.getRequestURI());
         return new ResponseEntity<>(errorInfo, HttpStatus.BAD_REQUEST);
-
     }
 }

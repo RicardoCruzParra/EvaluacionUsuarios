@@ -12,8 +12,8 @@ import com.evaluacion.usuarios.entity.Usuario;
 
 @SuppressWarnings("ALL")
 @Repository
-public class UsuarioDAOImpl implements UsuarioDAO {
-
+public class UsuarioDAOImpl implements UsuarioDAO
+{
     private final EntityManager entityManager;
 
     protected UsuarioDAOImpl(EntityManager entityManager) {

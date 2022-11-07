@@ -4,8 +4,8 @@ import com.evaluacion.usuarios.entity.Usuario;
 
 import java.util.List;
 
-public interface UsuarioDAO {
-
+public interface UsuarioDAO
+{
     List<Usuario> findAll();
 
     Usuario findById(String id);
