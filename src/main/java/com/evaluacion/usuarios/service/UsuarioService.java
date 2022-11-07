@@ -12,5 +12,5 @@ public interface UsuarioService
 
     void save(Usuario usuario);
 
-    void deleteById(String id) throws RuntimeException;
+    void deleteById(String id);
 }

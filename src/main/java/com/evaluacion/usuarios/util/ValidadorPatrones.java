@@ -1,4 +1,4 @@
-package com.evaluacion.usuarios.model;
+package com.evaluacion.usuarios.util;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

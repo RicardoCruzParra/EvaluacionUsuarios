@@ -1,5 +1,6 @@
 package com.evaluacion.usuarios.service;
 
+import com.evaluacion.usuarios.dao.UsuarioDAO;
 import com.evaluacion.usuarios.entity.Usuario;
 import com.evaluacion.usuarios.error.ErrorHandler;
 import org.junit.Before;
@@ -33,6 +34,9 @@ class UsuarioServiceImplTest {
     @Mock
     private UsuarioService usuarioService;
 
+    @Mock
+    private UsuarioDAO usuarioDAO;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -48,7 +52,7 @@ class UsuarioServiceImplTest {
 
     @org.junit.Test
     public void consultaExitosa_ListaUsuarios() {
-        UsuarioServiceImpl usuarioServiceImpl = new UsuarioServiceImpl();
+        UsuarioServiceImpl usuarioServiceImpl = new UsuarioServiceImpl(usuarioDAO);
         List<Usuario> listaUsuario = new ArrayList<>();
         Usuario usuario = new Usuario();
         listaUsuario.add(usuario);
@@ -60,7 +64,7 @@ class UsuarioServiceImplTest {
 
     @org.junit.Test(expected = ErrorHandler.class)
     public void consultaExitosa_PlataformaBaseException() {
-        UsuarioServiceImpl usuarioServiceImpl = new UsuarioServiceImpl();
+        UsuarioServiceImpl usuarioServiceImpl = new UsuarioServiceImpl(usuarioDAO);
         List<Usuario> listaUsuario = new ArrayList<>();
         Usuario usuario = new Usuario();
         listaUsuario.add(usuario);
@@ -70,7 +74,7 @@ class UsuarioServiceImplTest {
     }
 
     @org.junit.Test
-    public void creaUsuarioPostObjectOK() throws ErrorHandler {
+    public void creaUsuarioPostObjectOK(){
         List<Usuario> usuarios = new ArrayList<Usuario>();
         Usuario u = new Usuario();
         usuarios.add(u);
@@ -79,7 +83,7 @@ class UsuarioServiceImplTest {
     }
 
     @org.junit.Test
-    public void creaSolicitudServiceBad() throws ErrorHandler {
+    public void creaSolicitudServiceBad() {
         List<Usuario> usuarios = new ArrayList<Usuario>();
         ResponseEntity<List<Usuario>> res = new ResponseEntity(usuarios, HttpStatus.BAD_REQUEST);
         when(restTemplateMock.postForObject(anyString(), any(HttpEntity.class), (Class<Usuario>) any())).

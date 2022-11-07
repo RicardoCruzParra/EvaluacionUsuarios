@@ -6,19 +6,21 @@ import java.util.UUID;
 import com.evaluacion.usuarios.dao.UsuarioDAO;
 import com.evaluacion.usuarios.entity.Usuario;
 import com.evaluacion.usuarios.controller.UserJWTController;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import static com.evaluacion.usuarios.model.ValidadorPatrones.emailValidator;
-import static com.evaluacion.usuarios.model.ValidadorPatrones.passwordValidator;
+import static com.evaluacion.usuarios.util.ValidadorPatrones.emailValidator;
+import static com.evaluacion.usuarios.util.ValidadorPatrones.passwordValidator;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService
 {
     private final UsuarioDAO usuarioDAO;
 
-    public UsuarioServiceImpl() {
+    @Autowired
+    public UsuarioServiceImpl(UsuarioDAO usuarioDAO) {
         this.usuarioDAO = usuarioDAO;
     }
 
@@ -40,7 +42,6 @@ public class UsuarioServiceImpl implements UsuarioService
     @Override
     public void save(Usuario usuario)
     {
-        Usuario user = new Usuario();
         Date createDate = new Date();
         String id = UUID.randomUUID().toString();
 
@@ -48,19 +49,12 @@ public class UsuarioServiceImpl implements UsuarioService
         {
             if (passwordValidator(usuario.getPassword()))
             {
-                user.setId(id);
-                user.setName(usuario.getName());
-                user.setEmail(usuario.getEmail());
-                user.setPassword(usuario.getPassword());
-                user.setNumber(usuario.getNumber());
-                user.setCityCode(usuario.getCityCode());
-                user.setCountryCode(usuario.getCountryCode());
-                user.setCreated(createDate);
-                user.setLast_login(createDate);
-                user.setToken(UserJWTController.getJWTToken(usuario.getName()));
-                user.setIsactive(true);
+                usuario.setId(id);
+                usuario.setCreated(createDate);
+                usuario.setLast_login(createDate);
+                usuario.setIsactive(true);
 
-                usuarioDAO.save(user);
+                usuarioDAO.save(usuario);
             }
             else
             {
@@ -74,11 +68,11 @@ public class UsuarioServiceImpl implements UsuarioService
     }
 
     @Override
-    public void deleteById(String id) throws RuntimeException {
-        usuarioDAO.deleteById(id);
+    public void deleteById(String id) {
         if(id == null)
         {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El usuario no pudo ser eliminado por el ID proporcionado");
         }
+            usuarioDAO.deleteById(id);
     }
 }

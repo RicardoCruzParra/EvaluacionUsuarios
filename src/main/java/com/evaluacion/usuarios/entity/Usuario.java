@@ -2,14 +2,15 @@ package com.evaluacion.usuarios.entity;
 
 import javax.persistence.*;
 import java.util.Date;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+
+import lombok.*;
 
 @Getter
 @Setter
 @ToString
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "usuario")
 public class Usuario
@@ -48,22 +49,4 @@ public class Usuario
 
     @Column(name="isactive")
     private boolean isactive;
-
-    public Usuario() {}
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {return super.clone();}
-
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }
-
-    @Override
-    protected void finalize() throws Throwable {super.finalize();}
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
 }
