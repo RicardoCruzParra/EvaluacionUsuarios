@@ -8,7 +8,7 @@ import com.evaluacion.usuarios.entity.Usuario;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.jsonwebtoken.Jwts;
@@ -18,10 +18,10 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class UserJWTController
 {
     @PostMapping("login")
-    public Usuario login(@RequestParam("name") String name, @RequestParam("password") String password) {
-        String token = getJWTToken(name);
+    public Usuario login(@RequestBody Usuario user) {
+        String token = getJWTToken(user.getName());
         Usuario usuario = new Usuario();
-        usuario.setName(name);
+        usuario.setName(user.getName());
         usuario.setToken(token);
         return usuario;
     }
