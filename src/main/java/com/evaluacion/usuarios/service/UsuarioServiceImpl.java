@@ -18,7 +18,7 @@ public class UsuarioServiceImpl implements UsuarioService
 {
     private final UsuarioDAO usuarioDAO;
 
-    public UsuarioServiceImpl(UsuarioDAO usuarioDAO) {
+    public UsuarioServiceImpl() {
         this.usuarioDAO = usuarioDAO;
     }
 

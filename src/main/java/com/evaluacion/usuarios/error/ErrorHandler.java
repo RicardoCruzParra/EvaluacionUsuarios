@@ -12,8 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @ControllerAdvice
-public class ErrorHandler
-{
+public class ErrorHandler extends Throwable {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorInfo> methodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException e) {
 
