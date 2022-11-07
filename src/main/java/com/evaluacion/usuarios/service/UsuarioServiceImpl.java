@@ -3,12 +3,15 @@ package com.evaluacion.usuarios.service;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.regex.Pattern;
-
 import com.evaluacion.usuarios.dao.UsuarioDAO;
 import com.evaluacion.usuarios.entity.Usuario;
 import com.evaluacion.usuarios.controller.UserJWTController;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import static com.evaluacion.usuarios.model.ValidadorPatrones.emailValidator;
+import static com.evaluacion.usuarios.model.ValidadorPatrones.passwordValidator;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService
@@ -29,7 +32,7 @@ public class UsuarioServiceImpl implements UsuarioService
     {
         if(id == null)
         {
-            throw new RuntimeException("El usuario no fue encontrado por el ID proporcionado");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El usuario no fue encontrado por el ID proporcionado");
         }
         return usuarioDAO.findById(id);
     }
@@ -37,37 +40,36 @@ public class UsuarioServiceImpl implements UsuarioService
     @Override
     public void save(Usuario usuario)
     {
+        Usuario user = new Usuario();
         Date createDate = new Date();
         String id = UUID.randomUUID().toString();
-        final String PASSWORD_REGEX = "^(?=.*[0-9]{2})(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{4,16}$";
-        final Pattern PASSWORD_PATTERN = Pattern.compile(PASSWORD_REGEX);
 
-        if(usuario.getEmail().contains("@dominio.cl"))
+        if(emailValidator(usuario.getEmail()))
         {
-            if (PASSWORD_PATTERN.matcher(usuario.getPassword()).matches())
+            if (passwordValidator(usuario.getPassword()))
             {
-                usuario.setId(id);
-                usuario.setName(usuario.getName());
-                usuario.setEmail(usuario.getEmail());
-                usuario.setPassword(usuario.getPassword());
-                usuario.setNumber(usuario.getNumber());
-                usuario.setCityCode(usuario.getCityCode());
-                usuario.setCountryCode(usuario.getCountryCode());
-                usuario.setCreated(createDate);
-                usuario.setLast_login(createDate);
-                usuario.setToken(UserJWTController.getJWTToken(usuario.getName()));
-                usuario.setIsactive(true);
+                user.setId(id);
+                user.setName(usuario.getName());
+                user.setEmail(usuario.getEmail());
+                user.setPassword(usuario.getPassword());
+                user.setNumber(usuario.getNumber());
+                user.setCityCode(usuario.getCityCode());
+                user.setCountryCode(usuario.getCountryCode());
+                user.setCreated(createDate);
+                user.setLast_login(createDate);
+                user.setToken(UserJWTController.getJWTToken(usuario.getName()));
+                user.setIsactive(true);
 
-                usuarioDAO.save(usuario);
+                usuarioDAO.save(user);
             }
             else
             {
-                throw new RuntimeException("La contraseña debe tener al menos 1 mayúscula, 1 minuscula, 2 numeros");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La contraseña debe tener al menos 1 mayúscula, 1 minuscula, 2 numeros");
             }
         }
         else
         {
-            throw new RuntimeException("El email debe coincidir con el dominio: @dominio.cl");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El email debe coincidir con el dominio: @dominio.cl");
         }
     }
 
@@ -76,7 +78,7 @@ public class UsuarioServiceImpl implements UsuarioService
         usuarioDAO.deleteById(id);
         if(id == null)
         {
-            throw new RuntimeException("El usuario no pudo ser eliminado por el ID proporcionado ");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El usuario no pudo ser eliminado por el ID proporcionado");
         }
     }
 }
